@@ -47,6 +47,13 @@ testData = [ # 1
              , 'baseValue' : 0
              , 'check'     : 'x *  factorial( 1 )^^-1 + (-1) * x^^3 *  factorial( 3 )^^-1 + x^^5 *  factorial( 5 )^^-1 + (-1) * x^^7 *  factorial( 7 )^^-1 + x^^9 *  factorial( 9 )^^-1'
              }
+           , # 4
+             { 'formula'   : '1/(1+x)'
+             , 'steps'     : 4
+             , 'diffVar'   : 'x'
+             , 'baseValue' : 0
+             , 'check'     : '1 + (-1) * x *  factorial( 1 )^^-1 + 2 * x^^2 *  factorial( 2 )^^-1 + (-6) * x^^3 *  factorial( 3 )^^-1'
+             }
            ]
 
 startTime = datetime.now()
