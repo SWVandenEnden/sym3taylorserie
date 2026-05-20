@@ -115,7 +115,7 @@ def DisplayHelp():
 
 def CommandLine( argv ):
   """
-  Process the cubic equation command line parameters
+  Process the command line parameters
   """
   outputFormat = ""
   taylorString = ""

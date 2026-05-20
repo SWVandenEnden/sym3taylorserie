@@ -1,5 +1,5 @@
 """
-Initialization of the functions and modules cubic equation
+Initialization of the functions and modules
 """
 
 from .sym3taylorserie import *
