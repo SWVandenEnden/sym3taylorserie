@@ -5,7 +5,7 @@ A Python module to create a Taylor serie of a given formula
 ## Usage
 
 ### Calculate Taylor serie
-The solutions is a symexpress3 object
+The solution is a symexpress3 object
 ```py
 >>> import sym3taylorserie
 >>> objTaylor = sym3taylorserie.Sym3TaylorSerie()
