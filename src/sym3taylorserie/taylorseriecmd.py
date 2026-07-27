@@ -24,8 +24,9 @@
 import symexpress3
 import sym3taylorserie
 
+from sym3taylorserie import version
 
-def CalcSolution( taylorString, taylorSteps, taylorVar, taylorValue, outputFormat ):
+def CalcSolution( taylorString:str, taylorSteps:None|int, taylorVar:None|str, taylorValue:None|int, outputFormat:str ) -> None :
   """
   Create the Taylor serie
   """
@@ -77,21 +78,21 @@ def CalcSolution( taylorString, taylorSteps, taylorVar, taylorValue, outputForma
 
 
 
-def DisplayVersion():
+def DisplayVersion() -> None :
   """
   Display version information
   """
-  print( "Version    : " + sym3taylorserie.__version__    )
+  print( "Version    : " + version.__version__    )
 
-  print( "Author     : " + sym3taylorserie.__author__     )
-  print( "Copyright  : " + sym3taylorserie.__copyright__  )
-  print( "License    : " + sym3taylorserie.__license__    )
-  print( "Maintainer : " + sym3taylorserie.__maintainer__ )
-  print( "Email      : " + sym3taylorserie.__email__      )
-  print( "Status     : " + sym3taylorserie.__status__     )
+  print( "Author     : " + version.__author__     )
+  print( "Copyright  : " + version.__copyright__  )
+  print( "License    : " + version.__license__    )
+  print( "Maintainer : " + version.__maintainer__ )
+  print( "Email      : " + version.__email__      )
+  print( "Status     : " + version.__status__     )
 
 
-def DisplayHelp():
+def DisplayHelp() -> None :
   """
   Display help
   """
@@ -113,7 +114,7 @@ def DisplayHelp():
   print( 'python -m sym3taylorserie "(x+1)^^3"' )
   print( 'python -m sym3taylorserie -o s -s 20 -d x -p 0 "(x+1)^^3"' )
 
-def CommandLine( argv ):
+def CommandLine( argv:list[str] ) -> None :
   """
   Process the command line parameters
   """

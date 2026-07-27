@@ -23,7 +23,9 @@
     Based on: https://en.wikipedia.org/wiki/Taylor_series
 
 """
-# from datetime import datetime
+
+import typing
+import logging
 
 import symexpress3
 
@@ -32,38 +34,52 @@ class Sym3TaylorSerie():
   Caluculate the Taylor serie of a given sym3 expression
   """
 
-  def __init__( self ):
+  def __init__( self ) -> None :
     # defaults
-    self._formula       = ""    # sym3 formula in string format
-    self._steps         = 20    # max number of iterations
-    self._output        = None  # symexpress3.SymToHtml object
-    self._baseValue     = 0     # the base value of the Taylor series
-    self._diffVar       = 'x'   # the differentiate variable
-    self._taylorValues  = []    # array of the Taylor values
-    self._taylorSerie   = None  # sym3 expression of Taylor serie
-    self._complete      = False # Is Taylor expansion complete (serie is ended in the given steps)
+    self._formula       :str                                = ""    # sym3 formula in string format
+    self._steps         :int                                = 20    # max number of iterations
+    self._output        :None|symexpress3.SymToHtml         = None  # symexpress3.SymToHtml object
+    self._baseValue     :int                                = 0     # the base value of the Taylor series
+    self._diffVar       :str                                = 'x'   # the differentiate variable
+    self._taylorValues  :list[symexpress3.TypVarSym3Object] = []    # array of the Taylor values
+    self._taylorSerie   :None|symexpress3.TypVarSym3Object  = None  # sym3 expression of Taylor serie
+    self._complete      :bool                               = False # Is Taylor expansion complete (serie is ended in the given steps)
+    self._logger        :None|logging.Logger                = None  # Python logging object
 
   @property
-  def formula(self):
+  def log(self) -> None|logging.Logger :
+    """
+    The Python logger handle, None = no logger
+    """
+    return self._logger
+
+  @log.setter
+  def log(self, val:None|logging.Logger) -> None :
+    if val != None and not isinstance( val, logging.Logger):
+      raise NameError( f'log has incorrect type: {type(val)}, expected logging.Logger' )
+    self._logger = val
+
+  @property
+  def formula(self) -> str :
     """
     Symexpress3 formula
     """
     return self._formula
 
   @formula.setter
-  def formula(self, val):
+  def formula(self, val:typing.Any ) -> None :
     self._formula = symexpress3.ConvertToSymexpress3String( val )
 
 
   @property
-  def steps(self):
+  def steps(self) -> int :
     """
     Number of iterations
     """
     return self._steps
 
   @steps.setter
-  def steps(self, val):
+  def steps(self, val:int ) -> None :
     if not isinstance( val, int ):
       raise NameError( f'steps is incorrect: {type(val)}, expected int' )
     if val < 2:
@@ -72,41 +88,41 @@ class Sym3TaylorSerie():
     self._steps = val
 
   @property
-  def htmlOutput(self):
+  def htmlOutput(self) -> None|symexpress3.SymToHtml :
     """
     Set html output object
     """
     return self._output
 
   @htmlOutput.setter
-  def htmlOutput(self, val):
+  def htmlOutput(self, val:None|symexpress3.SymToHtml ) -> None :
     if val != None and ( not isinstance( val, symexpress3.SymToHtml )) :
       raise NameError( f'htmlOutput is incorrect: {type(val)}, expected SymToHtml object ' )
     self._output = val
 
   @property
-  def baseValue(self):
+  def baseValue(self) -> int :
     """
     The base (start) value of Taylor serie
     """
     return self._baseValue
 
   @baseValue.setter
-  def baseValue(self, val):
+  def baseValue(self, val:int ) -> None :
     if not isinstance( val, int ):
       raise NameError( f'baseValue is incorrect: {type(val)}, expected int' )
     self._baseValue = val
 
 
   @property
-  def diffVar(self):
+  def diffVar(self) -> str :
     """
     The differentiate variable
     """
     return self._diffVar
 
   @diffVar.setter
-  def diffVar(self, val):
+  def diffVar(self, val:str ) -> None :
     if not isinstance( val, str ):
       raise NameError( f'diffVar is incorrect: {type(val)}, expected str' )
     if len( val ) == 0:
@@ -114,14 +130,14 @@ class Sym3TaylorSerie():
     self._diffVar = val
 
   @property
-  def taylorComplete(self):
+  def taylorComplete(self) -> bool :
     """
     Is the Taylor serie ended within the given steps
     """
     return self._complete
 
   @property
-  def taylorValues(self):
+  def taylorValues(self) -> list[symexpress3.TypVarSym3Object] :
     """
     The Taylor values, each value is a sym3 expression
     """
@@ -129,7 +145,7 @@ class Sym3TaylorSerie():
 
 
   @property
-  def taylorSerie(self):
+  def taylorSerie(self) -> None|symexpress3.TypVarSym3Object :
     """
     The Taylor serie as sym3 expression
     """
@@ -138,10 +154,13 @@ class Sym3TaylorSerie():
   #
   # Calculate the Taylor serie
   #
-  def calcTaylorSerie(self):
+  def calcTaylorSerie(self) -> None :
     """
     Calculate the Taylor values and serie
     """
+    if self._logger != None:
+      self._logger.info( "Start calcTaylorSerie" )
+
     #
     # a = base value
     # Taylor Serie = f(a) + f'(a) ( x - a )^1   f''(a) ( x - a )^2   f'''(a) ( x - a )^3
@@ -188,6 +207,9 @@ class Sym3TaylorSerie():
 
     iStep = 0
     while iStep < self.steps:
+
+      if self._logger != None:
+        self._logger.info( f"Start step {iStep}" )
 
       # check if derivative or integral is available in formula
       dFunc = objStartFormula.getFunctions()
@@ -249,7 +271,7 @@ class Sym3TaylorSerie():
         self._taylorSerie.add( taylorVar )
       else:
         # x^<step>  | (x-a)^<step>
-        symX  = None
+        symX:None|symexpress3.TypVarSym3Object  = None
         if self.baseValue != 0 :
           # x - a
           symA = symexpress3.SymFormulaParser( '-1 * ' + str( self.baseValue  ))
@@ -284,6 +306,9 @@ class Sym3TaylorSerie():
       if self.taylorComplete != True:
         self._output.writeLine( f'Taylor serie is not ended within the given steps ({self._steps})' )
 
+
+    if self._logger != None:
+      self._logger.info( "End calcTaylorSerie" )
 
 # ---------------------------
 # The end
