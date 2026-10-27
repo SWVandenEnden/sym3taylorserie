@@ -61,7 +61,8 @@ def CalcSolution( taylorString:str, taylorSteps:None|int, taylorVar:None|str, ta
     # output data
     for cOutput in outputFormat:
       if cOutput == "s":
-        print( f"Taylor serie: {clsTaylor.taylorSerie}" )
+        # print( f"Taylor serie: {clsTaylor.taylorSerie}" )
+        print( str( clsTaylor.taylorSerie) )
 
       elif cOutput == "h":
         pass # do nothing html (output) is already set
